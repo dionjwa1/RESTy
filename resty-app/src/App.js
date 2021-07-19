@@ -1,5 +1,5 @@
 import React from 'react';
-import './app.js';
+
 import './app.scss';
 
 // Let's talk about using index.js and some other name in the component folder
