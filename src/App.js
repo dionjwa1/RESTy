@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './app.scss';
+import axios from 'axios';
 
 // Let's talk about using index.js and some other name in the component folder
 // There's pros and cons for each way of doing this ...
@@ -8,40 +9,46 @@ import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
 
-class App extends React.Component {
+function App() {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      requestParams: {},
-    };
-  }
+  const [data, setData] = useState({});
+  const [requestParams, setRequestParams] = useState({});
 
-  callApi = (requestParams) => {
+  useEffect(() => {
+    if (data.results) {
+      axios.get(data.results[0].url)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => console.log.error(err))
+    }
+  })
+  const callApi = (requestParams) => {
     // mock output
     const data = {
       count: 2,
       results: [
-        {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-        {name: 'fake thing 2', url: 'http://fakethings.com/2'},
+        { name: 'Pokemon', url: 'https://pokeapi.co/api/v2/pokemon/ditto' },
+        { name: 'Amazon', url: 'http://amazon.com' },
       ],
     };
-    this.setState({data, requestParams});
+    setData(data);
+    setRequestParams(requestParams);
+    // this.setState({data, requestParams});
   }
 
-  render() {
-    return (
-      <React.Fragment>
-        <Header />
-        <div>Request Method: {this.state.requestParams.method}</div>
-        <div>URL: {this.state.requestParams.url}</div>
-        <Form handleApiCall={this.callApi} />
-        <Results data={this.state.data} />
-        <Footer />
-      </React.Fragment>
-    );
+
+return (
+  <React.Fragment>
+    <Header />
+    <div>Request Method: {requestParams.method}</div>
+    <div>URL: {requestParams.url}</div>
+    <Form handleApiCall={callApi} />
+    <Results data={data} />
+    <Footer />
+  </React.Fragment>
+);
   }
-}
+
 
 export default App;
